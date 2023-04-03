@@ -8,18 +8,15 @@ const coworkings = require('./mock-coworkings');
 
 // j'utilise get pour récupérer les données de l'api
 app.get('/api/coworkings', (req, res) => {
+// Renvoyer tous les coworkings au format json, uniquement ceux dont la surface est supérieure à 500
+ 
+const result = coworkings.filter(element => element.superficy >500);
 
-  // je crée une variable qui contient une chaine de caractère vide
-  let sentence = ''
+ };
 
-  // je crée une boucle qui va parcourir le tableau coworkings
-  coworkings.map((data) => {
-    sentence += data.name
-    sentence += ','
-  })
-    console.log('je viens de faire une requete GET sur /api/coworkings')
-    // je renvoie la variable sentence
-    res.send(sentence)
+
+    // je renvoie la variable coworking
+    res.json(coworkings)
 })
 //  j'utilise get pour récupérer les données de l'api
 app.get('/api/coworkings/:id', (req, res) => {
