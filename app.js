@@ -40,6 +40,12 @@ app.get('/api/coworkings', (req, res) => {
 
   // on return le coworking dont l'identifiant est celui passé en paramètre
   const coworkingFound = coworkings.find(element => element.id == req.params.id)
+
+  // let coworkingFound;
+  // for (let index = 0; index < coworkings.lenght; index ++) {
+  //   const element = coworkings [index];
+  //   if (element.id == req.params.id)
+  // }
   
     // je renvoie la variable coworking
     res.json(coworkings)
