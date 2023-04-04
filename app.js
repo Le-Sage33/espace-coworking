@@ -1,52 +1,70 @@
-// je crée une variable qui utilise la méthode require pour importer le fichier mock-coworkings.js
 const express = require('express')
+const morgan = require('morgan')
+const serveFavicon = require('serve-favicon')
+
 const app = express()
 const port = 3000
 
-// je crée une variable qui utilise la méthode require pour importer le fichier mock-coworkings.js
 const coworkings = require('./mock-coworkings');
 
-  // j'utilise get pour récupérer les données de l'api
-  app.get('/api/coworkings', (req, res) => {
-  // Renvoyer tous les coworkings au format json, uniquement ceux dont la surface est supérieure à 500
-  
-const result = coworkings.filter(element => element.superficy >500);
+// const logger = (req, res, next) => {
+//     console.log(`URL : ${req.url}`)
+//     next();
+// }
 
-    // je renvoie la variable coworking
-    res.json(coworkings)
-})
-// j'utilise get pour récupérer les données de l'api
-app.get('/api/coworkings/:id', (req, res) => {
-
-  // Afficher le nom du coworking qui correspond à l'id en paramètre
-  // je crée une variable qui va chercher dans le tableau coworkings l'id correspondant à l'id de l'url
-  
-  let myCoworking = coworkings.find((data) => {
-  
-  // je parse l'id de l'url en int pour pouvoir le comparer à l'id du tableau
-  // le parseInt sert à convertir une chaine de caractère en nombre
-  // le parseInt est nécessaire car l'id de l'url est une chaine de caractère
-  return data.id === parseInt(req.params.id)
-  })
-  res.send(`Nom du coworking : ${myCoworking.name}`)
-})
-
-// j'utilise listen pour écouter le port 3108
-app.listen(port, () => {
-  console.log(`L'app sur le port ${port}`)
-})
+app
+    .use(morgan('dev'))
+    .use(serveFavicon(__dirname + '/favicon/favicon.ico'))
+    .use(express.json())
 
 app.get('/api/coworkings', (req, res) => {
+    // Renvoyer tous les coworkings au format json, uniquement ceux dont la surface est supérieure à 500
+    const limit = req.query.limit || 200
+    const result = coworkings.filter(element => element.superficy > limit);
 
-  // on return le coworking dont l'identifiant est celui passé en paramètre
-  const coworkingFound = coworkings.find(element => element.id == req.params.id)
+    const msg = `La liste des coworkings a bien été retournée.`
+    res.json({ message: msg, data: coworkings })
+})
 
-  // let coworkingFound;
-  // for (let index = 0; index < coworkings.lenght; index ++) {
-  //   const element = coworkings [index];
-  //   if (element.id == req.params.id)
-  // }
-  
-    // je renvoie la variable coworking
-    res.json(coworkings)
-  })
+app.get('/api/users', (req, res) => {
+    res.json({})
+})
+
+app.get('/api/reviews', (req, res) => {
+    res.json({})
+})
+
+app.get('/api/reviews/:id', (req, res) => {
+    res.json({})
+})
+
+app.get('/api/coworkings/:id', (req, res) => {
+    // Afficher le nom du coworking qui correspond à l'id en paramètre
+    let myCoworking = coworkings.find((coworking) => { return coworking.id === Number(req.params.id) })
+
+    let result;
+    if (myCoworking) {
+        const msg = `Le coworking n°${myCoworking.id} a bien été trouvé.`
+        result = { message: msg, data: myCoworking }
+    } else {
+        const msg = `Aucun coworking ne correspond à l'identifiant ${req.params.id}.`
+        result = { message: msg, data: {} }
+    }
+
+    res.json(result)
+})
+
+app.post('/api/coworkings', (req, res) => {
+  let newCoworking = req.body;
+// j'ajoute un nouveau coworking en rajouter un nouvel ID
+  let newID = coworkings[coworkings.lenght - 1].id + 1;
+  newCoworking.push(newCoworking);
+
+  coworkings.push(newCoworking);
+  const msg = `Un Coworking a bien été ajouté.`
+  res.json({ message: msg, data: coworkings })
+})
+
+app.listen(port, () => {
+    console.log(`L'app sur le port ${port}`)
+});
