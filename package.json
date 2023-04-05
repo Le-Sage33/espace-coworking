@@ -1,23 +1,27 @@
 {
-  "name": "espace-coworking",
+  "name": "expressjs-lapiscine-coworking",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000P\u0000r\u0000o\u0000j\u0000e\u0000t\u0000-\u0000-\u0000E\u0000s\u0000p\u0000a\u0000c\u0000e\u0000-\u0000C\u0000o\u0000w\u0000o\u0000r\u0000k\u0000i\u0000n\u0000g\u0000\r\u0000 \u0000#\u0000 \u0000P\u0000r\u0000o\u0000j\u0000e\u0000t\u0000-\u0000-\u0000E\u0000s\u0000p\u0000a\u0000c\u0000e\u0000-\u0000C\u0000o\u0000w\u0000o\u0000r\u0000k\u0000i\u0000n\u0000g\u0000\r\u0000 \u0000",
+  "description": "Project to learn expressjs",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Le-Sage33/Projet--Espace-Coworking.git"
+    "url": "git+https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking.git"
   },
-  "author": "Guillaume P",
+  "author": "PaulD",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Le-Sage33/Projet--Espace-Coworking/issues"
+    "url": "https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking/issues"
   },
-  "homepage": "https://github.com/Le-Sage33/Projet--Espace-Coworking#readme",
+  "homepage": "https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.18.2",
+    "mariadb": "^3.1.1",
+    "sequelize": "^6.30.0",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {

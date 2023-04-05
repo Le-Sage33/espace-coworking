@@ -1,70 +1,44 @@
 const express = require('express')
 const morgan = require('morgan')
 const serveFavicon = require('serve-favicon')
-
+const { Sequelize, DataTypes } = require('sequelize');
+const CoworkingModel = require('./models/coworking')
 const app = express()
 const port = 3000
 
-const coworkings = require('./mock-coworkings');
+const sequelize = new Sequelize('espace_coworking', 'root', '', {
+    host: 'localhost',
+    dialect: 'mariadb'
+});
 
-// const logger = (req, res, next) => {
-//     console.log(`URL : ${req.url}`)
-//     next();
-// }
+const Coworking = CoworkingModel(sequelize, DataTypes);
+
+sequelize.sync({ force: true })
+    .then(() => {
+        Coworking.create({
+            name: "Oasis Coworking",
+            price: { "hour": 4, "day": 21, "month": 100 },
+            address: { "number": "68bis", "street": "avenue Jean Jaurès", "postCode": 33150, "city": "Cenon" },
+            picture: "",
+            superficy: 200,
+            capacity: 27,
+        })
+            .then(() => { console.log('La base a bien été synchronisée.') })
+            .catch(error => console.log('Il manque'))
+    })
+
+sequelize.authenticate()
+    .then(() => console.log('La connexion à la base de données a bien été établie.'))
+    .catch(error => console.error(`Impossible de se connecter à la base de données ${error}`))
 
 app
     .use(morgan('dev'))
-    .use(serveFavicon(__dirname + '/favicon/favicon.ico'))
-    .use(express.json())
+    .use(serveFavicon(__dirname + '/favicon.ico'))
 
-app.get('/api/coworkings', (req, res) => {
-    // Renvoyer tous les coworkings au format json, uniquement ceux dont la surface est supérieure à 500
-    const limit = req.query.limit || 200
-    const result = coworkings.filter(element => element.superficy > limit);
+const coworkingRouter = require('./routes/coworkingRoutes')
 
-    const msg = `La liste des coworkings a bien été retournée.`
-    res.json({ message: msg, data: coworkings })
-})
-
-app.get('/api/users', (req, res) => {
-    res.json({})
-})
-
-app.get('/api/reviews', (req, res) => {
-    res.json({})
-})
-
-app.get('/api/reviews/:id', (req, res) => {
-    res.json({})
-})
-
-app.get('/api/coworkings/:id', (req, res) => {
-    // Afficher le nom du coworking qui correspond à l'id en paramètre
-    let myCoworking = coworkings.find((coworking) => { return coworking.id === Number(req.params.id) })
-
-    let result;
-    if (myCoworking) {
-        const msg = `Le coworking n°${myCoworking.id} a bien été trouvé.`
-        result = { message: msg, data: myCoworking }
-    } else {
-        const msg = `Aucun coworking ne correspond à l'identifiant ${req.params.id}.`
-        result = { message: msg, data: {} }
-    }
-
-    res.json(result)
-})
-
-app.post('/api/coworkings', (req, res) => {
-  let newCoworking = req.body;
-// j'ajoute un nouveau coworking en rajouter un nouvel ID
-  let newID = coworkings[coworkings.lenght - 1].id + 1;
-  newCoworking.push(newCoworking);
-
-  coworkings.push(newCoworking);
-  const msg = `Un Coworking a bien été ajouté.`
-  res.json({ message: msg, data: coworkings })
-})
+app.use('/api/coworkings', coworkingRouter)
 
 app.listen(port, () => {
     console.log(`L'app sur le port ${port}`)
-});
+})
