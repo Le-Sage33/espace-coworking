@@ -4,7 +4,7 @@ const CoworkingModelSequelize = require('../models/coworking')
 const UserModelSequelize = require('../models/user')
 const coworkings = require('../mock-coworkings');
 
-const sequelize = new Sequelize('espace-coworking', 'root', '', {
+const sequelize = new Sequelize('espace_coworking', 'root', '', {
     host: 'localhost',
     dialect: 'mariadb',
     logging: false
