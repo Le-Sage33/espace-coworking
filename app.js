@@ -4,7 +4,6 @@ const serveFavicon = require('serve-favicon')
 const sequelize = require('./db/sequelize')
 const app = express()
 const port = 3000
-
 sequelize.initDb();
 
 app

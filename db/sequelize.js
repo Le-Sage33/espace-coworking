@@ -1,5 +1,7 @@
+const bcrypt = require('bcrypt');
 const { Sequelize, DataTypes } = require('sequelize');
-const CoworkingModel = require('../models/coworking')
+const CoworkingModelSequelize = require('../models/coworking')
+const UserModelSequelize = require('../models/user')
 const coworkings = require('../mock-coworkings');
 
 const sequelize = new Sequelize('lapiscine_coworking', 'root', '', {
@@ -8,7 +10,8 @@ const sequelize = new Sequelize('lapiscine_coworking', 'root', '', {
     logging: false
 });
 
-const Coworking = CoworkingModel(sequelize, DataTypes)
+const CoworkingModel = CoworkingModelSequelize(sequelize, DataTypes)
+const UserModel = UserModelSequelize(sequelize, DataTypes)
 
 const initDb = () => {
     return sequelize.sync({ force: true }) 
@@ -16,7 +19,7 @@ const initDb = () => {
         // création des 11 coworkings dans la bdd, avec une boucle, 
         // message à afficher en console : La liste des {11} coworkings a bien été créée.
         coworkings.forEach((element) => {
-            Coworking.create({
+            CoworkingModel.create({
                 name: element.name,
                 price: element.price,
                 address: element.address,
@@ -24,6 +27,24 @@ const initDb = () => {
                 capacity: element.capacity,
             })
         })
+
+        bcrypt.hash('mdp', 10)
+            .then((hash) => {
+                UserModel.create({
+                    username: 'paul',
+                    password: hash
+                })
+            })
+            .catch(err => console.log(err))
+
+        bcrypt.hash('mdp', 10)
+        .then((hash) => {
+            UserModel.create({
+                username: 'pierre',
+                password: hash
+            })
+        })
+        .catch(err => console.log(err))    
     })
     .catch(error => console.log('Erreur'))
 }
@@ -34,5 +55,5 @@ sequelize.authenticate()
 
 
 module.exports = {
-    sequelize, Coworking, initDb
+    sequelize, CoworkingModel, initDb
 }
